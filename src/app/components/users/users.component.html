@@ -1,30 +1,82 @@
- <button (click)="showUserForm = !showUserForm" class="btn-dark btn mb-3">Add User</button>
- <div *ngIf="showUserForm" class="card-body card mb-3 ml-3 mr-3">
- <h2>Add User</h2>
-   <form (submit)="onSubmit($event)">
-     <label>First Name</label>
-     <input  type="text" class="form-control" [(ngModel)]="user.firstName" name="firstName">
-     <label>Last Name</label>
-     <input  type="text" class="form-control" [(ngModel)]="user.lastName" name="lastName">
-     <label>Email</label>
-     <input  type="text" class="form-control" [(ngModel)]="user.email" name="email">
-     <button  [disabled]="user.firstName =='' || user.lastName==''"  class="btn btn-light mb-3" [ngClass]="currentClasses">Add new user</button><br>
-   </form>
+<button (click)="showUserForm = !showUserForm" class="btn-dark btn mb-3">Add User</button>
+<div *ngIf="showUserForm" class="card-body card mb-3 ml-3 mr-3">
+  <h2>Add User</h2>
+  <form (ngSubmit)="onSubmit(userForm)" #userForm="ngForm" >
+    <div class="form-group">
 
- </div>
-  <ul   *ngIf="loaded;else loading">
-    <li class="card card-body mb-2" *ngFor="let user of users" [class.bg-light]="user.isActive" [style.border-color]="user.isActive ? 'green' : ''">
-      <div class="row">
-        <div class=""col-sm-8>
-          <h3 [ngStyle]="currentStyle">{{ user.firstName }}  {{ user.lastName }}</h3>
-          <small><button (click)="toggleHide(user)" class="btn btn-dark btn-sm mb-2"><i [ngClass]="user.hide ? 'fa fa-plus': 'fa fa-minus'"></i></button></small>
-          <ul class="list-group"  *ngIf="!user.hide">
-              <li class="list-group-item">{{user.email}}</li>
-            <li class="list-group-item">Joined in {{user.registered | date:"fullDate"}}</li>
-          </ul>
-        </div>
+      <label>First Name</label>
+      <input type="text"
+             class="form-control "
+             [(ngModel)]="user.firstName"
+             name="firstName"
+             #userFirstName="ngModel"
+             required
+             minlength="2"
+             [ngClass]="{'is-invalid' :userFirstName.errors &&
+             userFirstName.touched}"
+      >
+      <div [hidden]="!userFirstName.errors?.required" class="invalid-feedback">
+        First name required
       </div>
+      <div [hidden]="!userFirstName.errors?.minlength" class="invalid-feedback">
+        Must be at least 2 characters
+      </div>
+      <label>Last Name</label>
+      <input type="text" class="form-control"
+             [(ngModel)]="user.lastName"
+             name="lastName"
+             #userLastName="ngModel"
+             required
+             minlength="2"
+             [ngClass]="{'is-invalid': userLastName.errors &&
+             userLastName.touched}"
+      >
+      <div [hidden]="!userLastName.errors?.required" class="invalid-feedback">
+        Last name required
+      </div>
+      <div [hidden]="!userLastName.errors?.minlength" class="invalid-feedback">
+        Must be at least 2 characters
+      </div>
+      <label>Email</label>
+      <input type="text" class="form-control"
+             [(ngModel)]="user.email"
+             name="email"
+             #userEmail="ngModel"
+             [ngClass]="{'is-invalid':userEmail.errors &&
+              userEmail.touched}"
+             required
+             pattern="[\w-]+@([\w-]+\.)+[\w-]+"
+      >
+      <div [hidden]="!userEmail.errors?.required" class="invalid-feedback">
+        Email name required
+      </div>
+      <div [hidden]="!userEmail.errors?.pattern" class="invalid-feedback">
+        Email is not valid
+      </div>
+      <button [disabled]="!userForm.form.valid" class="btn btn-light mb-3" [ngClass]="currentClasses">Add new user
+      </button>
+      <br>
+    </div>
+  </form>
 
-    </li>
-  </ul>
-  <ng-template #loading>Loading Users ....</ng-template>
+</div>
+<ul *ngIf="loaded;else loading">
+  <li class="card card-body mb-2" *ngFor="let user of users" [class.bg-light]="user.isActive"
+      [style.border-color]="user.isActive ? 'green' : ''">
+    <div class="row">
+      <div class="" col-sm-8>
+        <h3 [ngStyle]="currentStyle">{{ user.firstName }}  {{ user.lastName }}</h3>
+        <small>
+          <button (click)="toggleHide(user)" class="btn btn-dark btn-sm mb-2"><i
+            [ngClass]="user.hide ? 'fa fa-plus': 'fa fa-minus'"></i></button>
+        </small>
+        <ul class="list-group" *ngIf="!user.hide">
+          <li class="list-group-item">{{user.email}}</li>
+          <li class="list-group-item">Joined in {{user.registered | date:"fullDate"}}</li>
+        </ul>
+      </div>
+    </div>
+
+  </li>
+</ul>
+<ng-template #loading>Loading Users ....</ng-template>

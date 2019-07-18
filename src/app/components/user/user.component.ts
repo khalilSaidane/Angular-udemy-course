@@ -15,12 +15,10 @@ export class UserComponent implements OnInit{
     this.user = {
       firstName: 'Khalil',
       lastName: 'Saidane',
-      age: 23 ,
-      address: {
-        street: 'Hadj ali soua',
-        city: 'Ksar hellal',
-        state: 'Monastir'
-      }
+      email: 'email',
+      registered: new Date(),
+      isActive: true,
+      hide: true,
     };
   }
 }

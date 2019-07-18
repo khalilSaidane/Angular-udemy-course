@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component , OnInit, ViewChild} from '@angular/core';
 import {User} from '../../models/User';
+import {Form} from '@angular/forms';
+
+
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
@@ -20,7 +23,8 @@ export class UsersComponent implements OnInit {
   currentClasses = {};
   currentStyle: {};
   showUserForm: boolean= false;
-
+  // @ts-ignore
+  @ViewChild('userForm') form: any;
   constructor() {
   }
 
@@ -60,13 +64,6 @@ export class UsersComponent implements OnInit {
     this.user.isActive = true;
     this.user.registered = new Date();
     this.users.unshift(this.user);
-    this.user  = {
-      firstName: '',
-      lastName: '',
-      email: '',
-      registered: null,
-      isActive: null,
-    };
   }
   setCurrentClasses() {
     this.currentClasses = {
@@ -90,8 +87,12 @@ export class UsersComponent implements OnInit {
    user.hide = !user.hide ;
   }
 
-  onSubmit(e) {
-    console.log(123);
-    e.preventDefault();
+  onSubmit({value , valid}: {value: User, valid: boolean}) {
+    if (valid) {
+      value.registered = new Date();
+      value.isActive = true ;
+      this.users.unshift(value);
+      this.form.reset();
+    }
   }
 }
