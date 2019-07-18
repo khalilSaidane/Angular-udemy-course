@@ -1,6 +1,6 @@
-import {Component , OnInit, ViewChild} from '@angular/core';
-import {User} from '../../models/User';
-import {Form} from '@angular/forms';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {User} from '../../module/User';
+import {DataService} from '../../servises/Data.service';
 
 
 @Component({
@@ -22,37 +22,21 @@ export class UsersComponent implements OnInit {
   enableAdd = false;
   currentClasses = {};
   currentStyle: {};
-  showUserForm: boolean= false;
+  showUserForm: boolean = false;
   // @ts-ignore
   @ViewChild('userForm') form: any;
-  constructor() {
+  data: any;
+
+  constructor(private dataService: DataService) {
   }
 
   ngOnInit() {
+
+    this.dataService.getUsers().subscribe((users) => {
+        this.users = users;
+      }
+    );
     setTimeout(() => {
-        this.users = [
-          {
-            firstName: 'Adam',
-            lastName: 'Smith',
-            email: 'Adam.smith@email.com',
-            registered: new Date(),
-            isActive: true,
-          },
-          {
-            firstName: 'Will',
-            lastName: 'smith',
-            email: 'Will.smith@email.com',
-            registered: new Date(),
-            isActive: false,
-          },
-          {
-            firstName: 'Bill',
-            lastName: 'Smith',
-            email: 'Bill.smith@email.com',
-            registered: new Date(),
-            isActive: true,
-          }
-        ];
         this.loaded = true;
       },
       2000);
@@ -60,17 +44,13 @@ export class UsersComponent implements OnInit {
     this.setCurrentStyles();
   }
 
-  addUser() {
-    this.user.isActive = true;
-    this.user.registered = new Date();
-    this.users.unshift(this.user);
-  }
   setCurrentClasses() {
     this.currentClasses = {
       'btn-color': this.enableAdd,
       'big-text': this.showExtended
     };
   }
+
   setCurrentStyles() {
     this.currentStyle = {
       'padding-top': this.showExtended ? '0' : '150px',
@@ -84,14 +64,14 @@ export class UsersComponent implements OnInit {
   }
 
   toggleHide(user: User) {
-   user.hide = !user.hide ;
+    user.hide = !user.hide;
   }
 
-  onSubmit({value , valid}: {value: User, valid: boolean}) {
+  onSubmit({value, valid}: { value: User, valid: boolean }) {
     if (valid) {
       value.registered = new Date();
-      value.isActive = true ;
-      this.users.unshift(value);
+      value.isActive = true;
+      this.dataService.addUser(value);
       this.form.reset();
     }
   }
