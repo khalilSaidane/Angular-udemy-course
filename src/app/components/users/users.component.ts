@@ -1,18 +1,25 @@
 import { Component, OnInit } from '@angular/core';
 import {User} from '../../models/User';
-
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css']
 })
 export class UsersComponent implements OnInit {
+  user: User = {
+    firstName: '',
+    lastName: '',
+    email: '',
+    registered: null,
+    isActive: null,
+  };
   users: User[];
   showExtended = true;
   loaded = false;
-  enableAdd = true;
+  enableAdd = false;
   currentClasses = {};
-  currenStyle: {};
+  currentStyle: {};
+  showUserForm: boolean= false;
 
   constructor() {
   }
@@ -21,46 +28,25 @@ export class UsersComponent implements OnInit {
     setTimeout(() => {
         this.users = [
           {
-            firstName: 'will',
+            firstName: 'Adam',
             lastName: 'Smith',
-            age: 68,
-            address: {
-              street: 'Hadj ali soua',
-              city: 'Ksar hellal',
-              state: 'Monastir'
-            },
-            image: 'http://lorempixel.com/300/300/people/3/',
+            email: 'Adam.smith@email.com',
+            registered: new Date(),
             isActive: true,
-            balance: 100,
-            registered: new Date('01/02/2019 10:30:00')
           },
           {
-            firstName: 'Kevin',
-            lastName: 'Debroyne',
-            age: 27,
-            address: {
-              street: 'Hadj ali soua',
-              city: 'Ksar hellal',
-              state: 'Monastir'
-            },
-            image: 'http://lorempixel.com/300/300/people/2/',
-            isActive: true,
-            balance: 200,
-            registered: new Date('01/02/2019 08:30:00')
-          },
-          {
-            firstName: 'Koli',
-            lastName: 'Bali',
-            age: 28,
-            address: {
-              street: 'Hadj ali soua',
-              city: 'Ksar hellal',
-              state: 'Monastir'
-            },
-            image: 'http://lorempixel.com/300/300/people/1/',
+            firstName: 'Will',
+            lastName: 'smith',
+            email: 'Will.smith@email.com',
+            registered: new Date(),
             isActive: false,
-            balance: 100,
-            registered: new Date('01/06/2019 08:30:00')
+          },
+          {
+            firstName: 'Bill',
+            lastName: 'Smith',
+            email: 'Bill.smith@email.com',
+            registered: new Date(),
+            isActive: true,
           }
         ];
         this.loaded = true;
@@ -70,8 +56,17 @@ export class UsersComponent implements OnInit {
     this.setCurrentStyles();
   }
 
-  addUser(user: User) {
-    this.users.push(user);
+  addUser() {
+    this.user.isActive = true;
+    this.user.registered = new Date();
+    this.users.unshift(this.user);
+    this.user  = {
+      firstName: '',
+      lastName: '',
+      email: '',
+      registered: null,
+      isActive: null,
+    };
   }
   setCurrentClasses() {
     this.currentClasses = {
@@ -80,11 +75,23 @@ export class UsersComponent implements OnInit {
     };
   }
   setCurrentStyles() {
-    this.currenStyle = {
+    this.currentStyle = {
       'padding-top': this.showExtended ? '0' : '150px',
       'font-size': this.showExtended ? '' : '40px'
     };
   }
 
 
+  fireEvent($event: Event) {
+    console.log(event.type);
+  }
+
+  toggleHide(user: User) {
+   user.hide = !user.hide ;
+  }
+
+  onSubmit(e) {
+    console.log(123);
+    e.preventDefault();
+  }
 }
