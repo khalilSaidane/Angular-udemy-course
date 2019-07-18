@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Post} from '../module/Post';
-import {post} from 'selenium-webdriver/http';
 
 @Injectable({
   providedIn: 'root'
@@ -20,5 +19,15 @@ export class PostService {
 
   savePost(p: Post): Observable<Post> {
     return this.http.post<Post>(this.postsUrl, p , this.httpOption);
+  }
+
+  edit(currentPost: Post): Observable<Post> {
+    const url = `${this.postsUrl}/${currentPost.id}`
+    return this.http.put<Post>(url, currentPost , this.httpOption);
+  }
+
+  remove(post: Post): Observable<Post> {
+    const url = `${this.postsUrl}/${post.id}`
+    return this.http.delete<Post>(url, this.httpOption);
   }
 }
